@@ -232,12 +232,33 @@ button,input,textarea{ font: inherit; color: inherit }
   letter-spacing: -0.02em;
 }
 .title__accent{
-  background: linear-gradient(90deg, var(--gold0), var(--gold2), var(--gold0));
-  -webkit-background-clip: text;
-  background-clip:text;
-  color: transparent;
-  text-shadow: 0 24px 60px rgba(245,197,106,.08);
   display:inline-block;
+}
+.name-gold{
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: linear-gradient(
+    105deg,
+    #fff9e6 0%,
+    #f5e3a1 14%,
+    #ffd25a 32%,
+    #fffef2 50%,
+    #e8b84a 68%,
+    #f3c56a 86%,
+    #fff9e6 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 14px rgba(245, 227, 161, 0.55))
+    drop-shadow(0 0 28px rgba(201, 149, 44, 0.35))
+    drop-shadow(0 2px 0 rgba(122, 76, 18, 0.45));
+  animation: gold-shimmer 4.5s ease-in-out infinite;
+}
+@keyframes gold-shimmer{
+  0%, 100%{ background-position: 0% 50%; }
+  50%{ background-position: 100% 50%; }
 }
 .title__rest{
   display:block;
@@ -280,6 +301,31 @@ button,input,textarea{ font: inherit; color: inherit }
   flex-wrap: wrap;
   gap: 12px;
   margin: 16px 0 16px;
+}
+.wa-pair{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+}
+.wa-pair .btn--whatsapp{
+  flex: 1 1 160px;
+  min-width: 0;
+}
+.btn__stack{
+  display:flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  line-height: 1.15;
+  text-align: left;
+}
+.btn__hint{
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  opacity: 0.9;
+  color: rgba(255,255,255,.78);
 }
 
 .btn{
@@ -411,14 +457,33 @@ button,input,textarea{ font: inherit; color: inherit }
   left: 14px;
   right: 14px;
   bottom: 14px;
+  z-index: 2;
   padding: 10px 12px;
   border-radius: 16px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.32);
+  border: 1px solid rgba(245, 227, 161, 0.28);
+  background: rgba(0,0,0,.42);
   backdrop-filter: blur(10px);
   font-family: Fraunces, ui-serif, Georgia, serif;
   letter-spacing: .01em;
   text-align:center;
+  font-size: clamp(15px, 3.2vw, 18px);
+  box-shadow:
+    0 0 0 1px rgba(255, 250, 230, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+}
+/* Nombre sobre la foto: color sólido + brillo (evita bug de gradient+clip en móvil). */
+.frame__caption--shine{
+  font-weight: 700;
+  color: #fffef5;
+  -webkit-text-fill-color: #fffef5;
+  background: none;
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  text-shadow:
+    0 0 1px rgba(122, 76, 18, 0.95),
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(245, 227, 161, 0.85),
+    0 0 36px rgba(243, 197, 106, 0.45);
 }
 .frame__img{
   display:block;
@@ -793,6 +858,14 @@ button,input,textarea{ font: inherit; color: inherit }
   flex-wrap: wrap;
   margin-top: 4px;
 }
+.form__actions--wa{
+  flex-direction: column;
+  align-items: stretch;
+}
+.form__actions--wa .btn--whatsapp{
+  width: 100%;
+  justify-content: flex-start;
+}
 
 /* (tip removed) */
 
@@ -856,6 +929,7 @@ button,input,textarea{ font: inherit; color: inherit }
 @media (prefers-reduced-motion: reduce){
   *{ scroll-behavior: auto !important; transition: none !important; }
   body::before, body::after{ animation: none !important; }
+  .name-gold{ animation: none !important; }
 }
 
 /* Reveal animation (estilo “tarjeta”) */

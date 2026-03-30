@@ -9,8 +9,9 @@ const INVITE = {
   venueFull: "Residencia Las Clavellinas",
   address: "La California, calle Sta. Margarita, Residencia Las Clavellinas",
   googleMapsUrl: "https://maps.app.goo.gl/qQx58P85Mmkrfs4M8",
-  whatsappNumberE164: "584120000000", // sin +, ejemplo VE: 58 + número
-  audioUrl: "./assets/music.mp3", // opcional: "./assets/music.mp3" o URL https
+  /** Números para confirmar asistencia (sin +). Aparecen dos botones en la invitación. */
+  whatsappNumbersE164: ["584128200886", "584121254166"],
+  audioUrl: "./img/music.mp3", // MP3 en la misma carpeta del sitio (o URL https)
   audioPreviewStartSec: 18, // desde qué segundo empieza el fragmento
   audioPreviewDurationSec: 20, // duración del fragmento
 };
@@ -229,21 +230,25 @@ function buildWhatsAppUrl({ guestName, attendance, companions, message }) {
   if (extra) lines.push(`Mensaje: ${extra}`);
 
   const text = lines.join("\n");
-  const url = new URL(`https://wa.me/${INVITE.whatsappNumberE164}`);
+  const num = INVITE.whatsappNumbersE164[0] ?? "";
+  const url = new URL(`https://wa.me/${num}`);
   url.searchParams.set("text", text);
   return url.toString();
 }
 
-function buildWhatsAppConfirmUrl() {
-  const url = new URL(`https://wa.me/${INVITE.whatsappNumberE164}`);
+function buildWhatsAppConfirmUrl(e164) {
+  const url = new URL(`https://wa.me/${e164}`);
   url.searchParams.set("text", "Confirmo mi asistencia");
   return url.toString();
 }
 
 function initWhatsAppConfirmButtons() {
-  const href = buildWhatsAppConfirmUrl();
+  const nums = INVITE.whatsappNumbersE164 ?? [];
   qsa("[data-wa-confirm]").forEach((el) => {
-    el.setAttribute("href", href);
+    const idx = Number(el.getAttribute("data-wa-index") ?? "0");
+    const e164 = nums[idx] ?? nums[0];
+    if (!e164) return;
+    el.setAttribute("href", buildWhatsAppConfirmUrl(String(e164)));
   });
 }
 
@@ -267,7 +272,7 @@ function downloadCalendarICS() {
   const startUTC = new Date(startLocal.getTime() - startLocal.getTimezoneOffset() * 60_000);
   const endUTC = new Date(endLocal.getTime() - endLocal.getTimezoneOffset() * 60_000);
 
-  const uid = `${INVITE.dateISO}-${INVITE.whatsappNumberE164}@invitation`;
+  const uid = `${INVITE.dateISO}-${(INVITE.whatsappNumbersE164 ?? []).join("-")}@invitation`;
   const now = new Date();
   const ics = [
     "BEGIN:VCALENDAR",
@@ -378,9 +383,11 @@ function initAudio() {
 
   const source = document.createElement("source");
   source.src = url;
+  source.type = "audio/mpeg";
   player.appendChild(source);
   player.hidden = true;
   fab.hidden = false;
+  player.load();
 
   const startSec = Number(INVITE.audioPreviewStartSec ?? 0) || 0;
   const durationSec = Math.max(3, Number(INVITE.audioPreviewDurationSec ?? 18) || 18);
@@ -392,6 +399,7 @@ function initAudio() {
   let state = "paused";
   let autoplayUnlocked = false;
   let lastAutoplayAttemptAt = 0;
+  let gestureHooksInstalled = false;
 
   function setFabUI(nextState) {
     state = nextState;
@@ -422,40 +430,52 @@ function initAudio() {
     if (player.currentTime > endSec) player.currentTime = startSec;
   }
 
-  async function playPreview({ resetToStart }) {
-    clearStopTimer();
-    if (resetToStart) {
-      // Asegura que el salto de tiempo sea consistente al iniciar.
-      player.currentTime = startSec;
-    } else {
-      clampToPreviewWindow();
-    }
-
-    try {
-      await player.play();
-      setFabUI("playing");
-      scheduleStop();
-      fab.classList.remove("musicfab--hint");
-      return true;
-    } catch {
-      setFabUI("paused");
-      fab.classList.add("musicfab--hint");
-      return false;
-    }
+  function removeScrollAutoplayListeners() {
+    window.removeEventListener("scroll", onUserScroll);
+    window.removeEventListener("wheel", onUserScroll);
+    window.removeEventListener("touchmove", onUserScroll);
+    window.removeEventListener("keydown", onUserScroll);
   }
 
-  function pause() {
-    clearStopTimer();
-    player.pause();
+  function onPlaySucceeded() {
+    autoplayUnlocked = true;
+    setFabUI("playing");
+    scheduleStop();
+    fab.classList.remove("musicfab--hint");
+    removeScrollAutoplayListeners();
+    removeGestureUnlockListeners();
+  }
+
+  function onPlayFailed() {
     setFabUI("paused");
+    fab.classList.add("musicfab--hint");
   }
 
-  fab.addEventListener("click", () => {
+  /**
+   * iOS/Safari: play() debe llamarse en el mismo “tick” del gesto del usuario.
+   * No uses async/await antes de play() en listeners de documento.
+   */
+  function playFromUserGesture(resetToStart) {
+    clearStopTimer();
+    if (resetToStart) player.currentTime = startSec;
+    else clampToPreviewWindow();
+    const p = player.play();
+    if (p !== undefined) {
+      p.then(onPlaySucceeded).catch(onPlayFailed);
+    } else {
+      onPlaySucceeded();
+    }
+  }
+
+  fab.addEventListener("click", (e) => {
+    e.stopPropagation();
     if (state === "playing") {
-      pause();
+      clearStopTimer();
+      player.pause();
+      setFabUI("paused");
       return;
     }
-    void playPreview({ resetToStart: false });
+    playFromUserGesture(false);
   });
 
   player.addEventListener("timeupdate", () => {
@@ -465,25 +485,12 @@ function initAudio() {
     }
   });
 
-  // Autoplay al hacer scroll: intentamos hasta que el navegador lo permita.
-  // Nota: si el navegador requiere tap/click primero, el intento fallará hasta que haya gesto válido.
-  async function attemptAutoplay() {
+  function onUserScroll() {
     if (autoplayUnlocked || state === "playing") return;
     const now = Date.now();
-    if (now - lastAutoplayAttemptAt < 900) return; // throttle
+    if (now - lastAutoplayAttemptAt < 600) return;
     lastAutoplayAttemptAt = now;
-    const ok = await playPreview({ resetToStart: true });
-    if (ok) {
-      autoplayUnlocked = true;
-      window.removeEventListener("scroll", onUserScroll, { capture: false });
-      window.removeEventListener("wheel", onUserScroll, { capture: false });
-      window.removeEventListener("touchmove", onUserScroll, { capture: false });
-      window.removeEventListener("keydown", onUserScroll, { capture: false });
-    }
-  }
-
-  function onUserScroll() {
-    void attemptAutoplay();
+    playFromUserGesture(true);
   }
 
   window.addEventListener("scroll", onUserScroll, { passive: true });
@@ -491,11 +498,31 @@ function initAudio() {
   window.addEventListener("touchmove", onUserScroll, { passive: true });
   window.addEventListener("keydown", onUserScroll, { passive: true });
 
-  // En móvil, el primer toque (gesto real) es lo que suele “desbloquear” el audio.
-  // Intentamos en el primer tap/click en cualquier parte.
-  const unlock = () => void attemptAutoplay();
-  window.addEventListener("pointerdown", unlock, { passive: true, once: true });
-  window.addEventListener("touchstart", unlock, { passive: true, once: true });
+  function onGestureUnlock(/** @type {Event} */ e) {
+    if (autoplayUnlocked || state === "playing") {
+      removeGestureUnlockListeners();
+      return;
+    }
+    const el = e.target;
+    if (el instanceof Element && el.closest("[data-musicfab]")) return;
+
+    const now = Date.now();
+    if (now - lastAutoplayAttemptAt < 250) return;
+    lastAutoplayAttemptAt = now;
+
+    playFromUserGesture(true);
+  }
+
+  function removeGestureUnlockListeners() {
+    if (!gestureHooksInstalled) return;
+    gestureHooksInstalled = false;
+    document.removeEventListener("click", onGestureUnlock, true);
+    document.removeEventListener("touchend", onGestureUnlock, true);
+  }
+
+  gestureHooksInstalled = true;
+  document.addEventListener("click", onGestureUnlock, true);
+  document.addEventListener("touchend", onGestureUnlock, { capture: true, passive: true });
 
   setFabUI("paused");
 }

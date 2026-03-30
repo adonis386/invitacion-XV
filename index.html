@@ -104,7 +104,7 @@
           <div class="hero__copy">
             <p class="kicker reveal">Mis 15 años</p>
             <h1 class="title reveal">
-              <span class="title__accent" data-invitee-name>Ashley Andreina Garcia Cartaya</span>
+              <span class="title__accent name-gold" data-invitee-name>Ashley Andreina Garcia Cartaya</span>
               <span class="title__rest">te invita a celebrar</span>
             </h1>
 
@@ -129,7 +129,7 @@
             </div>
 
             <div class="cta reveal">
-              <a class="btn btn--whatsapp" data-wa-confirm href="#" target="_blank" rel="noreferrer">
+              <a class="btn btn--primary" href="#rsvp">
                 <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                 Confirmar asistencia
               </a>
@@ -175,7 +175,7 @@
                 height="729"
               />
               <div class="frame__glow" aria-hidden="true"></div>
-              <figcaption class="frame__caption" data-invitee-name>Ashley Andreina Garcia Cartaya</figcaption>
+              <figcaption class="frame__caption frame__caption--shine" data-invitee-name>Ashley Andreina Garcia Cartaya</figcaption>
             </figure>
 
             <div class="memories reveal" aria-label="Recuerdos">
@@ -330,7 +330,7 @@
           <div class="section__head reveal">
             <h2 class="section__title">Confirmar asistencia</h2>
             <p class="section__subtitle">
-              Confirma por WhatsApp (toma 10 segundos).
+              Elige uno de los dos números: el mensaje ya viene listo, solo envía.
             </p>
           </div>
 
@@ -339,10 +339,36 @@
               <p class="muted">
                 Presiona el botón y envía el mensaje listo en WhatsApp.
               </p>
-              <div class="form__actions">
-                <a class="btn btn--whatsapp" data-wa-confirm href="#" target="_blank" rel="noreferrer">
+              <div class="form__actions form__actions--wa">
+                <a
+                  class="btn btn--whatsapp"
+                  data-wa-confirm
+                  data-wa-index="0"
+                  href="#"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Confirmo mi asistencia por WhatsApp 0412-8200886"
+                >
                   <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
-                  Confirmo mi asistencia
+                  <span class="btn__stack">
+                    <span>Confirmo mi asistencia</span>
+                    <span class="btn__hint">0412-8200886</span>
+                  </span>
+                </a>
+                <a
+                  class="btn btn--whatsapp"
+                  data-wa-confirm
+                  data-wa-index="1"
+                  href="#"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Confirmo mi asistencia por WhatsApp 0412-1254166"
+                >
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  <span class="btn__stack">
+                    <span>Confirmo mi asistencia</span>
+                    <span class="btn__hint">0412-1254166</span>
+                  </span>
                 </a>
               </div>
             </div>
@@ -354,7 +380,7 @@
 
     <footer class="footer" role="contentinfo">
       <div class="container footer__inner">
-        <audio preload="none" data-audio-player hidden>
+        <audio preload="auto" playsinline data-audio-player hidden>
           Tu navegador no soporta audio HTML5.
         </audio>
 
