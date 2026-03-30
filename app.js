@@ -88,14 +88,96 @@ function capitalize(s) {
 }
 
 function initGallery() {
-  const mainImg = qs(".frame__img");
-  qsa("[data-photo]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const src = btn.getAttribute("data-photo");
-      if (!src) return;
-      mainImg.src = src;
-    });
+  const dialog = document.querySelector("[data-lightbox]");
+  const img = document.querySelector("[data-lb-img]");
+  const closeBtn = document.querySelector("[data-lb-close]");
+  const prevBtn = document.querySelector("[data-lb-prev]");
+  const nextBtn = document.querySelector("[data-lb-next]");
+  const items = qsa("[data-gallery-src]");
+
+  if (!dialog || !(dialog instanceof HTMLDialogElement) || !img || !closeBtn || !prevBtn || !nextBtn) return;
+  if (items.length === 0) return;
+
+  const sources = items.map((b) => b.getAttribute("data-gallery-src")).filter(Boolean);
+  /** @type {number} */
+  let index = 0;
+
+  function render() {
+    const src = sources[index];
+    if (!src) return;
+    img.setAttribute("src", src);
+  }
+
+  function openAt(i) {
+    index = Math.max(0, Math.min(sources.length - 1, i));
+    render();
+    dialog.showModal();
+    closeBtn.focus();
+  }
+
+  function close() {
+    dialog.close();
+  }
+
+  function prev() {
+    index = (index - 1 + sources.length) % sources.length;
+    render();
+  }
+
+  function next() {
+    index = (index + 1) % sources.length;
+    render();
+  }
+
+  items.forEach((btn, i) => {
+    btn.addEventListener("click", () => openAt(i));
   });
+
+  closeBtn.addEventListener("click", close);
+  dialog.addEventListener("click", (e) => {
+    // click fuera del contenido = cerrar
+    const rect = dialog.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+    const inRect = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    if (!inRect) close();
+  });
+  prevBtn.addEventListener("click", prev);
+  nextBtn.addEventListener("click", next);
+
+  window.addEventListener("keydown", (e) => {
+    if (!dialog.open) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowLeft") prev();
+    if (e.key === "ArrowRight") next();
+  });
+
+  // swipe simple en móvil
+  let startX = 0;
+  let startY = 0;
+  img.addEventListener(
+    "touchstart",
+    (e) => {
+      const t = e.touches[0];
+      if (!t) return;
+      startX = t.clientX;
+      startY = t.clientY;
+    },
+    { passive: true },
+  );
+  img.addEventListener(
+    "touchend",
+    (e) => {
+      const t = e.changedTouches[0];
+      if (!t) return;
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx > 0) prev();
+      else next();
+    },
+    { passive: true },
+  );
 }
 
 function tickCountdown() {

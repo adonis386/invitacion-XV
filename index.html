@@ -15,14 +15,14 @@
     <link rel="canonical" href="https://invitacion-xv-ashley.vercel.app/" />
 
     <!-- Performance hints -->
-    <link rel="preload" as="image" href="./img/chica-4.jpeg" fetchpriority="high" />
+    <link rel="preload" as="image" href="./img/ppal.jpeg" fetchpriority="high" />
 
     <!-- Open Graph (compartir en WhatsApp/Redes) -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_VE" />
     <meta property="og:title" content="Invitación · XV de Ashley Andreina Garcia Cartaya" />
     <meta property="og:description" content="25 de abril de 2026 · Mira la ubicación, detalles y confirma tu asistencia." />
-    <meta property="og:image" content="https://invitacion-xv-ashley.vercel.app/img/chica-4.jpeg" />
+    <meta property="og:image" content="https://invitacion-xv-ashley.vercel.app/img/ppal.jpeg" />
     <meta property="og:image:alt" content="Invitación de 15 años" />
     <meta property="og:url" content="https://invitacion-xv-ashley.vercel.app/" />
 
@@ -30,7 +30,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Invitación · XV de Ashley Andreina Garcia Cartaya" />
     <meta name="twitter:description" content="25 de abril de 2026 · Ubicación, detalles y RSVP." />
-    <meta name="twitter:image" content="https://invitacion-xv-ashley.vercel.app/img/chica-4.jpeg" />
+    <meta name="twitter:image" content="https://invitacion-xv-ashley.vercel.app/img/ppal.jpeg" />
 
     <!-- Structured data (Event) -->
     <script type="application/ld+json">
@@ -54,7 +54,7 @@
             "addressCountry": "VE"
           }
         },
-        "image": ["./img/chica-4.jpeg"],
+        "image": ["https://invitacion-xv-ashley.vercel.app/img/ppal.jpeg"],
         "url": "https://invitacion-xv-ashley.vercel.app/",
         "sameAs": ["https://maps.app.goo.gl/qQx58P85Mmkrfs4M8"]
       }
@@ -90,6 +90,7 @@
 
         <nav id="navmenu" class="nav" aria-label="Secciones" data-navmenu>
           <a class="nav__link" href="#detalles">Detalles</a>
+          <a class="nav__link" href="#fotos">Fotos</a>
           <a class="nav__link" href="#ubicacion">Ubicación</a>
           <a class="nav__link" href="#rsvp">Confirmar</a>
         </nav>
@@ -165,13 +166,13 @@
             <figure class="frame reveal">
               <img
                 class="frame__img"
-                src="./img/chica-5.jpeg"
+                src="./img/ppal.jpeg"
                 alt="Foto principal"
                 loading="eager"
                 fetchpriority="high"
                 decoding="async"
-                width="1920"
-                height="2560"
+                width="972"
+                height="729"
               />
               <div class="frame__glow" aria-hidden="true"></div>
               <figcaption class="frame__caption" data-invitee-name>Ashley Andreina Garcia Cartaya</figcaption>
@@ -238,6 +239,50 @@
               </p>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section id="fotos" class="section" aria-label="Fotos">
+        <div class="container">
+          <div class="section__head reveal">
+            <h2 class="section__title">Fotos</h2>
+            <p class="section__subtitle">
+              Algunos recuerdos para sonreír antes de la gran noche.
+            </p>
+          </div>
+
+          <div class="gallery reveal" aria-label="Galería de fotos">
+            <button class="gitem gitem--face" type="button" data-gallery-src="./img/chica-1.jpeg" aria-label="Ver foto 1">
+              <img src="./img/chica-1.jpeg" alt="Foto de Ashley" loading="lazy" decoding="async" width="768" height="1024" />
+            </button>
+            <button class="gitem" type="button" data-gallery-src="./img/chica-3.jpeg" aria-label="Ver foto 2">
+              <img src="./img/chica-3.jpeg" alt="Foto de Ashley" loading="lazy" decoding="async" width="1920" height="2560" />
+            </button>
+            <button class="gitem" type="button" data-gallery-src="./img/chica-4.jpeg" aria-label="Ver foto 3">
+              <img src="./img/chica-4.jpeg" alt="Foto de Ashley" loading="lazy" decoding="async" width="1920" height="2560" />
+            </button>
+            <button class="gitem" type="button" data-gallery-src="./img/chica-5.jpeg" aria-label="Ver foto 4">
+              <img src="./img/chica-5.jpeg" alt="Foto de Ashley" loading="lazy" decoding="async" width="750" height="1000" />
+            </button>
+            <button class="gitem" type="button" data-gallery-src="./img/chica-6.jpeg" aria-label="Ver foto 5">
+              <img src="./img/chica-6.jpeg" alt="Foto de Ashley" loading="lazy" decoding="async" width="768" height="1024" />
+            </button>
+          </div>
+
+          <dialog class="lightbox" data-lightbox aria-label="Visor de fotos">
+            <div class="lightbox__inner">
+              <button class="lightbox__close" type="button" data-lb-close aria-label="Cerrar">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+              </button>
+              <button class="lightbox__nav lightbox__nav--prev" type="button" data-lb-prev aria-label="Anterior">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <img class="lightbox__img" data-lb-img alt="Foto" />
+              <button class="lightbox__nav lightbox__nav--next" type="button" data-lb-next aria-label="Siguiente">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </dialog>
         </div>
       </section>
 
