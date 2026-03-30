@@ -5,12 +5,12 @@ const INVITE = {
   startTime24h: "19:00", // HH:mm (24h)
   endTime24h: "23:30", // HH:mm (24h)
   timezone: "America/Caracas",
-  venueShort: "Salón",
-  venueFull: "Salón / Lugar",
+  venueShort: "Residencia Las Clavellinas",
+  venueFull: "Residencia Las Clavellinas",
   address: "La California, calle Sta. Margarita, Residencia Las Clavellinas",
   googleMapsUrl: "https://maps.app.goo.gl/qQx58P85Mmkrfs4M8",
   whatsappNumberE164: "584120000000", // sin +, ejemplo VE: 58 + número
-  audioUrl: "./img/music.mp3", // opcional: "./assets/music.mp3" o URL https
+  audioUrl: "./assets/music.mp3", // opcional: "./assets/music.mp3" o URL https
   audioPreviewStartSec: 18, // desde qué segundo empieza el fragmento
   audioPreviewDurationSec: 20, // duración del fragmento
 };
@@ -353,9 +353,11 @@ function initAudio() {
       await player.play();
       setFabUI("playing");
       scheduleStop();
+      fab.classList.remove("musicfab--hint");
       return true;
     } catch {
       setFabUI("paused");
+      fab.classList.add("musicfab--hint");
       return false;
     }
   }
@@ -419,12 +421,14 @@ function initAudio() {
 function initMobileNav() {
   const btn = document.querySelector("[data-navbtn]");
   const menu = document.querySelector("[data-navmenu]");
-  if (!btn || !menu) return;
+  const backdrop = document.querySelector("[data-navbackdrop]");
+  if (!btn || !menu || !backdrop) return;
 
   function setOpen(open) {
     menu.setAttribute("data-open", open ? "true" : "false");
     btn.setAttribute("aria-expanded", open ? "true" : "false");
     btn.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+    backdrop.hidden = !open;
     const icon = btn.querySelector("i");
     if (icon) icon.className = open ? "fa-solid fa-xmark" : "fa-solid fa-bars";
   }
@@ -440,6 +444,8 @@ function initMobileNav() {
     const a = e.target instanceof Element ? e.target.closest("a") : null;
     if (a) setOpen(false);
   });
+
+  backdrop.addEventListener("click", () => setOpen(false));
 
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") setOpen(false);
