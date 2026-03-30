@@ -84,7 +84,11 @@
           <span class="brand__name">Invitación</span>
         </div>
 
-        <nav class="nav" aria-label="Secciones">
+        <button class="navbtn" type="button" data-navbtn aria-label="Abrir menú" aria-expanded="false" aria-controls="navmenu">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <nav id="navmenu" class="nav" aria-label="Secciones" data-navmenu>
           <a class="nav__link" href="#detalles">Detalles</a>
           <a class="nav__link" href="#ubicacion">Ubicación</a>
           <a class="nav__link" href="#rsvp">Confirmar</a>
@@ -156,8 +160,8 @@
             </div>
           </div>
 
-          <div class="hero__media" aria-label="Galería">
-            <div class="frame reveal">
+          <div class="hero__media" aria-label="Fotos">
+            <figure class="frame reveal">
               <img
                 class="frame__img"
                 src="./img/chica-4.jpeg"
@@ -169,21 +173,21 @@
                 height="2560"
               />
               <div class="frame__glow" aria-hidden="true"></div>
-            </div>
+              <figcaption class="frame__caption" data-invitee-name>Ashley Andreina Garcia Cartaya</figcaption>
+            </figure>
 
-            <div class="thumbs reveal" aria-label="Fotos">
-              <button class="thumb" type="button" data-photo="./img/chica-4.jpeg" aria-label="Ver foto 1">
-                <img src="./img/chica-4.jpeg" alt="" loading="lazy" decoding="async" width="1920" height="2560" />
-              </button>
-              <button class="thumb" type="button" data-photo="./img/chica-5.jpeg" aria-label="Ver foto 2">
-                <img src="./img/chica-5.jpeg" alt="" loading="lazy" decoding="async" width="750" height="1000" />
-              </button>
-              <button class="thumb" type="button" data-photo="./img/chica-6.jpeg" aria-label="Ver foto 3">
-                <img src="./img/chica-6.jpeg" alt="" loading="lazy" decoding="async" width="768" height="1024" />
-              </button>
-              <button class="thumb" type="button" data-photo="./img/chica-3.jpeg" aria-label="Ver foto 4">
-                <img src="./img/chica-3.jpeg" alt="" loading="lazy" decoding="async" width="1920" height="2560" />
-              </button>
+            <div class="memories reveal" aria-label="Recuerdos">
+              <p class="memories__text">
+                La niña de las risas fáciles, los sueños grandes y los abrazos que curan…
+                hoy llega a sus <strong>15</strong> con la misma luz de siempre, pero lista
+                para brillar más bonito que nunca.
+              </p>
+
+              <div class="memories__photos" aria-label="Fotos de niña">
+                <img class="memories__img" src="./img/chica-2.jpeg" alt="Foto de Ashley de niña" loading="lazy" decoding="async" width="768" height="1024" />
+                <img class="memories__img" src="./img/chica-5.jpeg" alt="Foto recuerdo" loading="lazy" decoding="async" width="750" height="1000" />
+                <img class="memories__img" src="./img/chica-6.jpeg" alt="Foto recuerdo" loading="lazy" decoding="async" width="768" height="1024" />
+              </div>
             </div>
           </div>
         </div>

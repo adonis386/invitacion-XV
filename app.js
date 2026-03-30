@@ -407,7 +407,43 @@ function initAudio() {
   window.addEventListener("touchmove", onUserScroll, { passive: true });
   window.addEventListener("keydown", onUserScroll, { passive: true });
 
+  // En móvil, el primer toque (gesto real) es lo que suele “desbloquear” el audio.
+  // Intentamos en el primer tap/click en cualquier parte.
+  const unlock = () => void attemptAutoplay();
+  window.addEventListener("pointerdown", unlock, { passive: true, once: true });
+  window.addEventListener("touchstart", unlock, { passive: true, once: true });
+
   setFabUI("paused");
+}
+
+function initMobileNav() {
+  const btn = document.querySelector("[data-navbtn]");
+  const menu = document.querySelector("[data-navmenu]");
+  if (!btn || !menu) return;
+
+  function setOpen(open) {
+    menu.setAttribute("data-open", open ? "true" : "false");
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    btn.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+    const icon = btn.querySelector("i");
+    if (icon) icon.className = open ? "fa-solid fa-xmark" : "fa-solid fa-bars";
+  }
+
+  setOpen(false);
+
+  btn.addEventListener("click", () => {
+    const isOpen = menu.getAttribute("data-open") === "true";
+    setOpen(!isOpen);
+  });
+
+  menu.addEventListener("click", (e) => {
+    const a = e.target instanceof Element ? e.target.closest("a") : null;
+    if (a) setOpen(false);
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") setOpen(false);
+  });
 }
 
 function main() {
@@ -418,6 +454,7 @@ function main() {
   initCopyAddress();
   initReveal();
   initAudio();
+  initMobileNav();
   tickCountdown();
   window.setInterval(tickCountdown, 1000);
 }
