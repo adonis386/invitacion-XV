@@ -727,19 +727,19 @@ button,input,textarea{ font: inherit; color: inherit }
 
 /* Gallery */
 .gallery{
-  /* Masonry sin huecos (evita “espacios en blanco”) */
-  column-count: 3;
-  column-gap: 18px;
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
   padding: 6px 0 2px;
 }
 .gitem{
+  grid-column: span 4;
   width: 100%;
-  display: block;
-  break-inside: avoid;
-  -webkit-column-break-inside: avoid;
-  margin: 0 0 18px;
+  display: grid;
+  place-items: stretch;
+  margin: 0;
   border-radius: min(34px, 6vw) min(26px, 5vw) min(40px, 7vw) min(28px, 5.2vw);
-  padding: 6px;
+  padding: 8px;
   overflow:hidden;
   border: 1px solid rgba(245,227,161,.12);
   background:
@@ -775,18 +775,26 @@ button,input,textarea{ font: inherit; color: inherit }
 }
 .gitem img{
   width:100%;
-  height: auto;
+  aspect-ratio: 4 / 5;
+  height: 100%;
   display:block;
   object-fit: cover;
   object-position: 50% 35%;
   filter: saturate(1.03) contrast(1.03);
   transform: scale(1.02);
-  border-radius: calc(inherit - 6px);
+  border-radius: calc( min(34px, 6vw) - 10px );
 }
-.gitem--face img{
-  object-position: 50% 18%;
+
+@media (max-width: 960px){
+  .gallery{ gap: 12px; }
+  .gitem{ grid-column: span 6; padding: 8px; }
 }
-.gitem--face img{ object-position: 50% 22%; }
+
+@media (max-width: 520px){
+  .gallery{ gap: 12px; }
+  .gitem{ grid-column: span 12; padding: 8px; border-radius: 26px 22px 32px 20px; }
+  .gitem img{ border-radius: 18px; }
+}
 
 .lightbox{
   width: min(1100px, calc(100% - 18px));

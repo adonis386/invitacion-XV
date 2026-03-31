@@ -2,7 +2,7 @@
 const INVITE = {
   celebrantName: "Ashley Andreina Garcia Cartaya",
   dateISO: "2026-04-25", // YYYY-MM-DD
-  startTime24h: "19:00", // HH:mm (24h)
+  startTime24h: "20:00", // HH:mm (24h)
   endTime24h: "23:30", // HH:mm (24h)
   timezone: "America/Caracas",
   venueShort: "Residencia Las Clavellinas",
@@ -29,11 +29,12 @@ function formatDateEs(date) {
   }).format(date);
 }
 
-function formatTimeEs(date) {
-  return new Intl.DateTimeFormat("es", {
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
+function formatTimeAmPm(date) {
+  const h24 = date.getHours();
+  const m = pad2(date.getMinutes());
+  const ampm = h24 >= 12 ? "PM" : "AM";
+  const h12 = ((h24 + 11) % 12) + 1;
+  return `${h12}:${m} ${ampm}`;
 }
 
 function getEventStartLocalDate() {
@@ -80,7 +81,7 @@ function initStaticTexts() {
 
   const start = getEventStartLocalDate();
   setText("[data-event-date-text]", capitalize(formatDateEs(start)));
-  setText("[data-event-time-text]", formatTimeEs(start));
+  setText("[data-event-time-text]", formatTimeAmPm(start));
 }
 
 function capitalize(s) {
@@ -213,7 +214,7 @@ function tickCountdown() {
 function buildWhatsAppUrl({ guestName, attendance, companions, message }) {
   const start = getEventStartLocalDate();
   const dateText = capitalize(formatDateEs(start));
-  const timeText = formatTimeEs(start);
+  const timeText = formatTimeAmPm(start);
 
   const companionsText =
     companions && companions.trim() !== "" ? `Acompañantes: ${companions.trim()}` : "Acompañantes: 0";
