@@ -76,6 +76,9 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -171,6 +174,7 @@
 
           <div class="hero__media" aria-label="Fotos">
             <figure class="frame reveal">
+              <div class="frame__halo" aria-hidden="true"></div>
               <img
                 class="frame__img"
                 src="./img/ppal.jpeg"
@@ -228,12 +232,11 @@
             <article class="card reveal">
               <h3 class="card__title">Dress code</h3>
               <p class="muted" data-event-dress>
-                Elegante / semiformal. (Evitar blanco si deseas).
+                Elegante / semiformal.
               </p>
               <div class="chips" aria-label="Sugerencias">
                 <span class="chip">Elegante</span>
                 <span class="chip">Semiformal</span>
-                <span class="chip chip--gold">Toque dorado</span>
               </div>
             </article>
 
@@ -258,20 +261,20 @@
           </div>
 
           <div class="gallery reveal" aria-label="Galería de fotos">
-            <button class="gitem gitem--face" type="button" data-gallery-src="./img/chica-1.jpeg" aria-label="Ver foto 1">
-              <img src="./img/chica-1.jpeg" alt="Foto de Ashley" loading="lazy" decoding="async" width="768" height="1024" />
+            <button class="gitem gitem--face" type="button" data-gallery-src="./img/1.png" aria-label="Ver foto 1">
+              <img src="./img/1.png" alt="Foto 1" loading="lazy" decoding="async" width="1080" height="1440" />
             </button>
-            <button class="gitem" type="button" data-gallery-src="./img/chica-3.jpeg" aria-label="Ver foto 2">
-              <img src="./img/chica-3.jpeg" alt="Foto de Ashley" loading="lazy" decoding="async" width="1920" height="2560" />
+            <button class="gitem" type="button" data-gallery-src="./img/2.png" aria-label="Ver foto 2">
+              <img src="./img/2.png" alt="Foto 2" loading="lazy" decoding="async" width="1080" height="1440" />
             </button>
-            <button class="gitem" type="button" data-gallery-src="./img/chica-4.jpeg" aria-label="Ver foto 3">
-              <img src="./img/chica-4.jpeg" alt="Foto de Ashley" loading="lazy" decoding="async" width="1920" height="2560" />
+            <button class="gitem" type="button" data-gallery-src="./img/3.png" aria-label="Ver foto 3">
+              <img src="./img/3.png" alt="Foto 3" loading="lazy" decoding="async" width="1080" height="1440" />
             </button>
-            <button class="gitem" type="button" data-gallery-src="./img/chica-5.jpeg" aria-label="Ver foto 4">
-              <img src="./img/chica-5.jpeg" alt="Foto de Ashley" loading="lazy" decoding="async" width="750" height="1000" />
+            <button class="gitem" type="button" data-gallery-src="./img/4.png" aria-label="Ver foto 4">
+              <img src="./img/4.png" alt="Foto 4" loading="lazy" decoding="async" width="1080" height="1440" />
             </button>
-            <button class="gitem" type="button" data-gallery-src="./img/chica-6.jpeg" aria-label="Ver foto 5">
-              <img src="./img/chica-6.jpeg" alt="Foto de Ashley" loading="lazy" decoding="async" width="768" height="1024" />
+            <button class="gitem" type="button" data-gallery-src="./img/5.png" aria-label="Ver foto 5">
+              <img src="./img/5.png" alt="Foto 5" loading="lazy" decoding="async" width="1080" height="1440" />
             </button>
           </div>
 
@@ -386,7 +389,7 @@
 
     <footer class="footer" role="contentinfo">
       <div class="container footer__inner">
-        <audio preload="auto" playsinline data-audio-player hidden>
+        <audio preload="none" playsinline data-audio-player hidden>
           Tu navegador no soporta audio HTML5.
         </audio>
 
@@ -396,9 +399,7 @@
           </span>
         </button>
 
-        <p class="footer__text">
-          Hecho con cariño. <span aria-hidden="true">✨</span>
-        </p>
+        
       </div>
     </footer>
 

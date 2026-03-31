@@ -370,6 +370,96 @@ function initReveal() {
   els.forEach((el) => io.observe(el));
 }
 
+function initGsapPlus() {
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+  const gsap = window.gsap;
+  const ScrollTrigger = window.ScrollTrigger;
+  if (reduceMotion || !gsap) return;
+
+  if (ScrollTrigger && gsap.registerPlugin) gsap.registerPlugin(ScrollTrigger);
+
+  // Hero: respiración sutil del marco y la foto
+  const frame = document.querySelector(".frame");
+  if (frame) {
+    gsap.to(frame, {
+      y: -6,
+      duration: 3.2,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  const heroImg = document.querySelector(".frame__img");
+  if (heroImg) {
+    gsap.to(heroImg, {
+      scale: 1.06,
+      duration: 5.5,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  const halo = document.querySelector(".frame__halo");
+  const glow = document.querySelector(".frame__glow");
+  if (halo) {
+    gsap.to(halo, {
+      opacity: 1,
+      duration: 2.6,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+    });
+    gsap.to(halo, {
+      rotation: 360,
+      transformOrigin: "50% 50%",
+      duration: 18,
+      ease: "none",
+      repeat: -1,
+    });
+  }
+  if (glow) {
+    gsap.to(glow, {
+      opacity: 0.55,
+      duration: 2.8,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  const heroMedia = document.querySelector(".hero__media");
+  const heroCopy = document.querySelector(".hero__copy");
+  if (ScrollTrigger && heroMedia && heroCopy) {
+    gsap.to(heroMedia, {
+      y: -18,
+      ease: "none",
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 0.6 },
+    });
+    gsap.to(heroCopy, {
+      y: 10,
+      ease: "none",
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 0.6 },
+    });
+  }
+
+  // Galería: entrada con stagger y hover “lift”
+  const items = gsap.utils?.toArray ? gsap.utils.toArray(".gitem") : Array.from(document.querySelectorAll(".gitem"));
+  if (items.length && ScrollTrigger) {
+    gsap.from(items, {
+      opacity: 0,
+      y: 26,
+      scale: 0.98,
+      filter: "blur(10px)",
+      duration: 0.9,
+      ease: "power2.out",
+      stagger: { each: 0.10, from: "random" },
+      scrollTrigger: { trigger: ".gallery", start: "top 80%" },
+    });
+  }
+}
+
 function initAudio() {
   const player = document.querySelector("[data-audio-player]");
   const fab = document.querySelector("[data-musicfab]");
@@ -387,7 +477,8 @@ function initAudio() {
   player.appendChild(source);
   player.hidden = true;
   fab.hidden = false;
-  player.load();
+  // Performance: no cargues el MP3 hasta que haya un gesto del usuario
+  let loaded = false;
 
   const startSec = Number(INVITE.audioPreviewStartSec ?? 0) || 0;
   const durationSec = Math.max(3, Number(INVITE.audioPreviewDurationSec ?? 18) || 18);
@@ -432,9 +523,6 @@ function initAudio() {
 
   function removeScrollAutoplayListeners() {
     window.removeEventListener("scroll", onUserScroll);
-    window.removeEventListener("wheel", onUserScroll);
-    window.removeEventListener("touchmove", onUserScroll);
-    window.removeEventListener("keydown", onUserScroll);
   }
 
   function onPlaySucceeded() {
@@ -457,6 +545,10 @@ function initAudio() {
    */
   function playFromUserGesture(resetToStart) {
     clearStopTimer();
+    if (!loaded) {
+      loaded = true;
+      player.load();
+    }
     if (resetToStart) player.currentTime = startSec;
     else clampToPreviewWindow();
     const p = player.play();
@@ -487,8 +579,12 @@ function initAudio() {
 
   function onUserScroll() {
     if (autoplayUnlocked || state === "playing") return;
+    // Solo una vez: primer “gesto de scroll” del usuario (móvil/PC)
+    removeScrollAutoplayListeners();
+    window.removeEventListener("wheel", onUserScroll);
+    window.removeEventListener("touchmove", onUserScroll);
     const now = Date.now();
-    if (now - lastAutoplayAttemptAt < 600) return;
+    if (now - lastAutoplayAttemptAt < 250) return;
     lastAutoplayAttemptAt = now;
     playFromUserGesture(true);
   }
@@ -496,7 +592,6 @@ function initAudio() {
   window.addEventListener("scroll", onUserScroll, { passive: true });
   window.addEventListener("wheel", onUserScroll, { passive: true });
   window.addEventListener("touchmove", onUserScroll, { passive: true });
-  window.addEventListener("keydown", onUserScroll, { passive: true });
 
   function onGestureUnlock(/** @type {Event} */ e) {
     if (autoplayUnlocked || state === "playing") {
@@ -568,6 +663,7 @@ function main() {
   initCalendarButton();
   initCopyAddress();
   initReveal();
+  initGsapPlus();
   initAudio();
   initMobileNav();
   tickCountdown();
